@@ -19,15 +19,19 @@ const HorizontalCalendar = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    console.log("Date clicked:", date > today ? "future date" : "past date");
+
     if (date > today) {
+      console.log("Showing toast");
       toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(date)}`,
         variant: "destructive",
       });
-      return; // Add this to prevent the router.push
+      return;
     }
 
+    console.log("Routing to message page");
     router.push(`/message/${date.toISOString().split("T")[0]}`);
   };
 

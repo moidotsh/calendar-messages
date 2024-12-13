@@ -2,8 +2,8 @@
 import { useState, useCallback } from "react";
 
 interface ToastProps {
+  title: string;
   message: string;
-  title?: string;
   variant?: "default" | "destructive";
 }
 

@@ -2,16 +2,16 @@
 import React, { useEffect } from "react";
 
 interface ToastProps {
+  title: string;
   message: string;
-  title?: string;
   variant?: "default" | "destructive";
   duration?: number;
   onClose: () => void;
 }
 
 export const Toast: React.FC<ToastProps> = ({
-  message,
   title,
+  message,
   variant = "default",
   duration = 3000,
   onClose,
@@ -31,7 +31,7 @@ export const Toast: React.FC<ToastProps> = ({
       <div
         className={`${bgColor} text-white px-6 py-3 rounded-lg shadow-lg backdrop-blur-sm`}
       >
-        {title && <h3 className="font-semibold mb-1">{title}</h3>}
+        <h3 className="font-semibold mb-1">{title}</h3>
         <p className="text-sm opacity-90">{message}</p>
       </div>
     </div>
