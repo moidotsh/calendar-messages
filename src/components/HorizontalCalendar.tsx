@@ -5,6 +5,7 @@ import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useVisibleCards } from "@/hooks/useVisibleCards";
 import { AnimatedBackground } from "./AnimatedBackground";
 import { useToast } from "@/hooks/useToast";
+import EnhancedHeader from "./EnhancedHeader";
 
 type DateType = "birthday" | "bonus" | "christmas" | "normal";
 
@@ -16,11 +17,9 @@ const HorizontalCalendar = () => {
   const { firstVisible, lastVisible } = useVisibleCards(scrollRef);
 
   const handleDateClick = (date: Date) => {
-    // Get today's date at midnight
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Create a new date instance to avoid mutations
     const targetDate = new Date(date);
     targetDate.setHours(0, 0, 0, 0);
 
@@ -33,21 +32,19 @@ const HorizontalCalendar = () => {
     const todayTime = today.getTime();
 
     if (targetDateTime > todayTime) {
-      // Return early to prevent routing
       return toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(targetDate)}`,
       });
     }
 
-    // Only route if it's a past or today's date
     router.push(`/message/${targetDate.toISOString().split("T")[0]}`);
   };
 
   const getCardClasses = (index: number, dateType: DateType) => {
     const baseClasses = getDateClasses(dateType);
     const isFirstCard = index === firstVisible && firstVisible > 0;
-    const isLastCard = index === lastVisible && dateType !== "christmas"; // Only blur if not Christmas
+    const isLastCard = index === lastVisible && dateType !== "christmas";
 
     if (isFirstCard) {
       return `${baseClasses} first-card blur-[2px]`;
@@ -61,7 +58,6 @@ const HorizontalCalendar = () => {
   };
 
   const dates = React.useMemo(() => {
-    // Change to December 21, 2024
     const startDate = new Date(2024, 11, 21);
     startDate.setHours(0, 0, 0, 0);
 
@@ -86,11 +82,8 @@ const HorizontalCalendar = () => {
     const month = date.getMonth();
     const day = date.getDate();
 
-    // Birthday: January 4th
     if (month === 0 && day === 4) return "birthday";
-    // January 5th - bonus
     if (month === 0 && day === 5) return "bonus";
-    // January 6th - Christmas
     if (month === 0 && day === 6) return "christmas";
     return "normal";
   };
@@ -129,28 +122,28 @@ const HorizontalCalendar = () => {
   return (
     <div className="relative min-h-screen">
       <AnimatedBackground progress={scrollProgress} />
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="max-w-4xl w-full">
+      <EnhancedHeader />
+      <div className="fixed inset-0 flex items-center justify-center px-2 sm:px-4">
+        <div className="w-full max-w-3xl">
           <div
             ref={scrollRef}
-            className="flex overflow-x-auto hide-scrollbar gap-4 px-16 py-8 snap-x snap-mandatory"
+            className="flex overflow-x-auto hide-scrollbar gap-2 sm:gap-3 px-2 sm:px-4 py-8 snap-x snap-mandatory"
           >
             {dates.map((date, index) => {
               const dateType = isSpecialDate(date);
               return (
                 <div
                   key={date.toISOString()}
-                  className="calendar-card flex-none w-32 snap-center"
-                  data-index={index}
+                  className="calendar-card flex-none w-20 sm:w-24 snap-center"
                 >
                   <button
                     onClick={() => handleDateClick(date)}
                     className={getCardClasses(index, dateType)}
                   >
-                    <span className="text-white/60 text-sm">
+                    <span className="text-white/60 text-[10px] sm:text-xs">
                       {formatDate(date)}
                     </span>
-                    <span className="text-white text-2xl font-bold">
+                    <span className="text-white text-lg sm:text-xl font-bold">
                       {date.getDate()}
                     </span>
                     {getSpecialLabel(dateType)}
