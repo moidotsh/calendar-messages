@@ -15,9 +15,10 @@ export const Toast = ({
   onClose,
 }: ToastProps) => {
   useEffect(() => {
+    console.log("Toast mounted with:", { title, message, variant });
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, [onClose, title, message, variant]);
 
   return (
     <div className="fixed bottom-4 right-4 z-[100] animate-slide-in-up">

@@ -1,16 +1,15 @@
-// src/hooks/useToast.ts
 import { create } from "zustand";
-
-interface ToastState {
-  toast: ToastMessage | null;
-  showToast: (message: ToastMessage) => void;
-  hideToast: () => void;
-}
 
 interface ToastMessage {
   title: string;
   message: string;
   variant?: "default" | "destructive";
+}
+
+interface ToastState {
+  toast: ToastMessage | null;
+  showToast: (message: ToastMessage) => void;
+  hideToast: () => void;
 }
 
 const useToastStore = create<ToastState>((set) => ({
@@ -20,11 +19,11 @@ const useToastStore = create<ToastState>((set) => ({
 }));
 
 export const useToast = () => {
-  const { toast, showToast, hideToast } = useToastStore();
+  const { toast: activeToast, showToast, hideToast } = useToastStore();
 
   return {
     toast: showToast,
     hideToast,
-    activeToast: toast,
+    activeToast, // Now this matches what we're using in _app.tsx
   };
 };

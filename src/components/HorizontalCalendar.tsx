@@ -16,23 +16,33 @@ const HorizontalCalendar = () => {
   const { firstVisible, lastVisible } = useVisibleCards(scrollRef);
 
   const handleDateClick = (date: Date) => {
+    // Get today's date at midnight
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    console.log("Date clicked:", date > today ? "future date" : "past date");
+    // Create a new date instance to avoid mutations
+    const targetDate = new Date(date);
+    targetDate.setHours(0, 0, 0, 0);
 
-    if (date > today) {
-      console.log("Showing toast");
-      toast({
+    console.log({
+      clicked: targetDate.toISOString(),
+      today: today.toISOString(),
+    });
+
+    const targetDateTime = targetDate.getTime();
+    const todayTime = today.getTime();
+
+    if (targetDateTime > todayTime) {
+      // Return early to prevent routing
+      return toast({
         title: "Hey! No peeking!! 👀",
-        message: `This message will be available on ${formatDate(date)}`,
+        message: `This message will be available on ${formatDate(targetDate)}`,
         variant: "destructive",
       });
-      return;
     }
 
-    console.log("Routing to message page");
-    router.push(`/message/${date.toISOString().split("T")[0]}`);
+    // Only route if it's a past or today's date
+    router.push(`/message/${targetDate.toISOString().split("T")[0]}`);
   };
 
   const getCardClasses = (index: number, dateType: DateType) => {
@@ -52,13 +62,15 @@ const HorizontalCalendar = () => {
   };
 
   const dates = React.useMemo(() => {
-    const startDate = new Date(2023, 11, 21); // December 21st
-    const datesArray = [];
+    // Change to December 21, 2024
+    const startDate = new Date(2024, 11, 21);
+    startDate.setHours(0, 0, 0, 0);
 
-    // Generate dates from Dec 21 to Jan 6
+    const datesArray = [];
     for (let i = 0; i < 17; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
+      date.setHours(0, 0, 0, 0);
       datesArray.push(date);
     }
     return datesArray;
