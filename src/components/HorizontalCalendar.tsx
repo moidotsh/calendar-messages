@@ -4,14 +4,32 @@ import { useHorizontalScroll } from "@/hooks/useHorizontalScroll";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useVisibleCards } from "@/hooks/useVisibleCards";
 import { AnimatedBackground } from "./AnimatedBackground";
+import { useToast } from "@/hooks/use-toast";
 
 type DateType = "birthday" | "bonus" | "christmas" | "normal";
 
 const HorizontalCalendar = () => {
   const router = useRouter();
+  const { toast } = useToast();
   const scrollRef = useHorizontalScroll();
   const scrollProgress = useScrollProgress(scrollRef);
   const { firstVisible, lastVisible } = useVisibleCards(scrollRef);
+
+  const handleDateClick = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (date > today) {
+      toast({
+        title: "Hey! No peeking!! 👀",
+        description: "This message will be available on " + formatDate(date),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    router.push(`/message/${date.toISOString().split("T")[0]}`);
+  };
 
   const getCardClasses = (index: number, dateType: DateType) => {
     const baseClasses = getDateClasses(dateType);
@@ -111,11 +129,7 @@ const HorizontalCalendar = () => {
                   data-index={index}
                 >
                   <button
-                    onClick={() =>
-                      router.push(
-                        `/message/${date.toISOString().split("T")[0]}`,
-                      )
-                    }
+                    onClick={() => handleDateClick(date)}
                     className={getCardClasses(index, dateType)}
                   >
                     <span className="text-white/60 text-sm">
