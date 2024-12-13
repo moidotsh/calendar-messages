@@ -5,16 +5,18 @@ import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useVisibleCards } from "@/hooks/useVisibleCards";
 import { AnimatedBackground } from "./AnimatedBackground";
 
+type DateType = "birthday" | "bonus" | "christmas" | "normal";
+
 const HorizontalCalendar = () => {
   const router = useRouter();
   const scrollRef = useHorizontalScroll();
   const scrollProgress = useScrollProgress(scrollRef);
   const { firstVisible, lastVisible } = useVisibleCards(scrollRef);
 
-  const getCardClasses = (index: number, dateType: string) => {
+  const getCardClasses = (index: number, dateType: DateType) => {
     const baseClasses = getDateClasses(dateType);
     const isFirstCard = index === firstVisible && firstVisible > 0;
-    const isLastCard = index === lastVisible;
+    const isLastCard = index === lastVisible && dateType !== "christmas"; // Only blur if not Christmas
 
     if (isFirstCard) {
       return `${baseClasses} first-card blur-[2px]`;
@@ -47,7 +49,7 @@ const HorizontalCalendar = () => {
     }).format(date);
   };
 
-  const isSpecialDate = (date: Date) => {
+  const isSpecialDate = (date: Date): DateType => {
     const month = date.getMonth();
     const day = date.getDate();
 
@@ -60,7 +62,7 @@ const HorizontalCalendar = () => {
     return "normal";
   };
 
-  const getDateClasses = (dateType: string) => {
+  const getDateClasses = (dateType: DateType) => {
     const baseClasses =
       "w-full aspect-square rounded-lg backdrop-blur-sm transition-all duration-300 flex flex-col items-center justify-center gap-2 border";
 
@@ -76,7 +78,7 @@ const HorizontalCalendar = () => {
     }
   };
 
-  const getSpecialLabel = (dateType: string) => {
+  const getSpecialLabel = (dateType: DateType) => {
     switch (dateType) {
       case "birthday":
         return <span className="text-pink-200 text-xs mt-1">Birthday! 🎂</span>;

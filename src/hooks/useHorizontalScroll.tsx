@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+// hooks/useHorizontalScroll.ts
+import { useEffect, useRef, RefObject } from "react";
 
-export const useHorizontalScroll = () => {
+export const useHorizontalScroll = (): RefObject<HTMLDivElement | null> => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -9,7 +10,6 @@ export const useHorizontalScroll = () => {
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-
       const scrollMultiplier = e.deltaMode === 0 ? 1.5 : 30;
       const scrollAmount = e.deltaY * scrollMultiplier;
 
@@ -20,10 +20,7 @@ export const useHorizontalScroll = () => {
     };
 
     scrollContainer.addEventListener("wheel", handleWheel, { passive: false });
-
     return () => {
-      // Added cleanup for smooth scroll behavior
-      scrollContainer.style.scrollBehavior = "auto";
       scrollContainer.removeEventListener("wheel", handleWheel);
     };
   }, []);

@@ -1,7 +1,9 @@
 // hooks/useVisibleCards.ts
 import { useState, useEffect, RefObject } from "react";
 
-export const useVisibleCards = (scrollRef: RefObject<HTMLElement>) => {
+export const useVisibleCards = (
+  scrollRef: RefObject<HTMLDivElement | null>,
+) => {
   const [firstVisible, setFirstVisible] = useState(0);
   const [lastVisible, setLastVisible] = useState(0);
 
@@ -34,7 +36,7 @@ export const useVisibleCards = (scrollRef: RefObject<HTMLElement>) => {
     };
 
     element.addEventListener("scroll", handleScroll, { passive: true });
-    updateVisibility(); // Initial check
+    updateVisibility();
 
     return () => element.removeEventListener("scroll", handleScroll);
   }, [scrollRef]);
