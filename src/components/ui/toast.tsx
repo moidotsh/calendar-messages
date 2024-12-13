@@ -1,38 +1,33 @@
-// components/ui/Toast.tsx
+// src/components/ui/Toast.tsx
 import React, { useEffect } from "react";
 
 interface ToastProps {
   title: string;
   message: string;
   variant?: "default" | "destructive";
-  duration?: number;
   onClose: () => void;
 }
 
-export const Toast: React.FC<ToastProps> = ({
+export const Toast = ({
   title,
   message,
   variant = "default",
-  duration = 3000,
   onClose,
-}) => {
+}: ToastProps) => {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, duration);
-
+    const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
-  }, [duration, onClose]);
-
-  const bgColor = variant === "destructive" ? "bg-red-500/80" : "bg-black/80";
+  }, [onClose]);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 animate-slide-in-up">
+    <div className="fixed bottom-4 right-4 z-[100] animate-slide-in-up">
       <div
-        className={`${bgColor} text-white px-6 py-3 rounded-lg shadow-lg backdrop-blur-sm`}
+        className={`rounded-lg shadow-lg p-4 ${
+          variant === "destructive" ? "bg-red-500/90" : "bg-black/90"
+        } text-white`}
       >
-        <h3 className="font-semibold mb-1">{title}</h3>
-        <p className="text-sm opacity-90">{message}</p>
+        <h4 className="font-semibold">{title}</h4>
+        <p className="text-sm mt-1 opacity-90">{message}</p>
       </div>
     </div>
   );

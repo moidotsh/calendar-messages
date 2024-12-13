@@ -1,15 +1,25 @@
 // pages/_app.tsx
-import { useToast } from "@/hooks/useToast";
-import { Toast } from "@/components/ui/toast";
 import type { AppProps } from "next/app";
+import { useToast } from "@/hooks/useToast";
+import { Toast } from "@/components/ui/Toast";
+import "@/styles/globals.css";
 
-export default function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   const { activeToast, hideToast } = useToast();
 
   return (
     <>
       <Component {...pageProps} />
-      {activeToast && <Toast {...activeToast} onClose={hideToast} />}
+      {activeToast && (
+        <Toast
+          title={activeToast.title}
+          message={activeToast.message}
+          variant={activeToast.variant}
+          onClose={hideToast}
+        />
+      )}
     </>
   );
 }
+
+export default MyApp;

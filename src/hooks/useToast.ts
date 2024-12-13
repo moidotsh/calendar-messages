@@ -1,22 +1,26 @@
-// hooks/useToast.ts
-import { useState, useCallback } from "react";
+// src/hooks/useToast.ts
+import { create } from "zustand";
 
-interface ToastProps {
+interface ToastState {
+  toast: ToastMessage | null;
+  showToast: (message: ToastMessage) => void;
+  hideToast: () => void;
+}
+
+interface ToastMessage {
   title: string;
   message: string;
   variant?: "default" | "destructive";
 }
 
+const useToastStore = create<ToastState>((set) => ({
+  toast: null,
+  showToast: (message) => set({ toast: message }),
+  hideToast: () => set({ toast: null }),
+}));
+
 export const useToast = () => {
-  const [toast, setToast] = useState<ToastProps | null>(null);
-
-  const showToast = useCallback((config: ToastProps) => {
-    setToast(config);
-  }, []);
-
-  const hideToast = useCallback(() => {
-    setToast(null);
-  }, []);
+  const { toast, showToast, hideToast } = useToastStore();
 
   return {
     toast: showToast,
