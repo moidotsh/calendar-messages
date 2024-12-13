@@ -4,7 +4,7 @@ import { useHorizontalScroll } from "@/hooks/useHorizontalScroll";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useVisibleCards } from "@/hooks/useVisibleCards";
 import { AnimatedBackground } from "./AnimatedBackground";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 
 type DateType = "birthday" | "bonus" | "christmas" | "normal";
 
@@ -22,7 +22,7 @@ const HorizontalCalendar = () => {
     if (date > today) {
       toast({
         title: "Hey! No peeking!! 👀",
-        description: "This message will be available on " + formatDate(date),
+        message: `This message will be available on ${formatDate(date)}`,
         variant: "destructive",
       });
       return;
