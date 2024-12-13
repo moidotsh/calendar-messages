@@ -37,7 +37,6 @@ const HorizontalCalendar = () => {
       return toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(targetDate)}`,
-        variant: "destructive",
       });
     }
 
