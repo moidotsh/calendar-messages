@@ -14,7 +14,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Toast
           title={activeToast.title}
           message={activeToast.message}
-          variant={activeToast.variant}
           onClose={hideToast}
         />
       )}
