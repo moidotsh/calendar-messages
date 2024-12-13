@@ -25,7 +25,7 @@ const HorizontalCalendar = () => {
         message: `This message will be available on ${formatDate(date)}`,
         variant: "destructive",
       });
-      return;
+      return; // Add this to prevent the router.push
     }
 
     router.push(`/message/${date.toISOString().split("T")[0]}`);
