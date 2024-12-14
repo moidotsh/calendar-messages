@@ -7,7 +7,7 @@ import { AnimatedBackground } from "./AnimatedBackground";
 import { useToast } from "@/hooks/useToast";
 import EnhancedHeader from "./EnhancedHeader";
 
-type DateType = "birthday" | "bonus" | "christmas" | "normal";
+type DateType = "birthday" | "bonus" | "christmas" | "yalda" | "normal";
 
 const HorizontalCalendar = () => {
   const router = useRouter();
@@ -57,6 +57,21 @@ const HorizontalCalendar = () => {
     return baseClasses;
   };
 
+  const getSpecialLabel = (dateType: DateType) => {
+    const baseClasses = "text-xs mt-1 font-medium tracking-wide";
+
+    switch (dateType) {
+      case "birthday":
+        return <span className={`${baseClasses} text-pink-200`}>🎂</span>;
+      case "bonus":
+        return <span className={`${baseClasses} text-purple-200`}>✨</span>;
+      case "christmas":
+        return <span className={`${baseClasses} text-emerald-200`}>🎄</span>;
+      default:
+        return null;
+    }
+  };
+
   const dates = React.useMemo(() => {
     const startDate = new Date(2024, 11, 21);
     startDate.setHours(0, 0, 0, 0);
@@ -82,6 +97,7 @@ const HorizontalCalendar = () => {
     const month = date.getMonth();
     const day = date.getDate();
 
+    if (month === 11 && day === 21) return "yalda"; // December 21 - Shab-e Yalda
     if (month === 0 && day === 4) return "birthday";
     if (month === 0 && day === 5) return "bonus";
     if (month === 0 && day === 6) return "christmas";
@@ -89,8 +105,12 @@ const HorizontalCalendar = () => {
   };
 
   const getDateClasses = (dateType: DateType) => {
-    const baseClasses =
-      "w-full aspect-square rounded-lg backdrop-blur-sm transition-all duration-300 flex flex-col items-center justify-center gap-2 border";
+    const baseClasses = `
+        w-full aspect-square rounded-lg backdrop-blur-sm
+        transition-all duration-300
+        flex flex-col items-center justify-center gap-2
+        border
+      `;
 
     switch (dateType) {
       case "birthday":
@@ -104,27 +124,12 @@ const HorizontalCalendar = () => {
     }
   };
 
-  const getSpecialLabel = (dateType: DateType) => {
-    switch (dateType) {
-      case "birthday":
-        return <span className="text-pink-200 text-xs mt-1">Birthday! 🎂</span>;
-      case "bonus":
-        return <span className="text-purple-200 text-xs mt-1">Bonus ✨</span>;
-      case "christmas":
-        return (
-          <span className="text-emerald-200 text-xs mt-1">Christmas 🎄</span>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="relative min-h-screen">
       <AnimatedBackground progress={scrollProgress} />
       <EnhancedHeader />
-      <div className="fixed inset-0 flex items-center justify-center px-2 sm:px-4">
-        <div className="w-full max-w-3xl">
+      <div className="fixed inset-0 flex items-center justify-center px-2 sm:px-4 z-10">
+        <div className="w-full max-w-2xl">
           <div
             ref={scrollRef}
             className="flex overflow-x-auto hide-scrollbar gap-2 sm:gap-3 px-2 sm:px-4 py-8 snap-x snap-mandatory"
