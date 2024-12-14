@@ -61,14 +61,9 @@ const POETRY_COLLECTION = [
 const EnhancedHeader = () => {
   // Use deterministic selection based on the current date
   const selectedPoem = React.useMemo(() => {
-    const today = new Date();
-    const dayOfYear = Math.floor(
-      (today.getTime() - new Date(today.getUTCFullYear(), 0, 0).getTime()) /
-        86400000,
-    );
-    const index = dayOfYear % POETRY_COLLECTION.length;
-    return POETRY_COLLECTION[index];
-  }, []);
+    const randomIndex = Math.floor(Math.random() * POETRY_COLLECTION.length);
+    return POETRY_COLLECTION[randomIndex];
+  }, []); // Empty dependency array means this will only run once per page load
 
   return (
     <div className="absolute inset-x-0 top-12 flex flex-col items-center z-10">
