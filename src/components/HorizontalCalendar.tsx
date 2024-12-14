@@ -77,7 +77,7 @@ const HorizontalCalendar = () => {
   };
 
   const dates = React.useMemo(() => {
-    const startDate = new Date(2024, 11, 21);
+    const startDate = new Date(2024, 11, 20);
     startDate.setHours(0, 0, 0, 0);
 
     const datesArray = [];
@@ -101,7 +101,7 @@ const HorizontalCalendar = () => {
     const month = date.getMonth();
     const day = date.getDate();
 
-    if (month === 11 && day === 21) return "yalda"; // December 21 - Shab-e Yalda
+    if (month === 11 && day === 20) return "yalda"; // December 20 - Shab-e Yalda
     if (month === 0 && day === 4) return "birthday";
     if (month === 0 && day === 5) return "bonus";
     if (month === 0 && day === 6) return "christmas";
