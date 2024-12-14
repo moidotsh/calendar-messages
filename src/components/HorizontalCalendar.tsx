@@ -58,19 +58,21 @@ const HorizontalCalendar = () => {
   };
 
   const getSpecialLabel = (dateType: DateType) => {
-    const baseClasses = "text-xs mt-1 font-medium tracking-wide flex gap-1";
+    const baseClasses =
+      "text-xs font-medium tracking-wide flex gap-1 justify-center";
 
     switch (dateType) {
       case "birthday":
         return <span className={baseClasses}>🎂 🎉 🎈</span>;
       case "bonus":
-        return <span className={baseClasses}>✨ 💰 🎁</span>;
+        return <span className={baseClasses}>✨✨✨</span>;
       case "christmas":
         return <span className={baseClasses}>🎄 🎅 ❄️</span>;
       case "yalda":
         return <span className={baseClasses}>🍎 🍉 🌙</span>;
       default:
-        return null;
+        // Empty space with visibility hidden for consistent height
+        return <span className={`${baseClasses} invisible`}>🎄 🎅 ❄️</span>;
     }
   };
 
@@ -136,7 +138,7 @@ const HorizontalCalendar = () => {
         <div className="w-full max-w-2xl">
           <div
             ref={scrollRef}
-            className="flex overflow-x-auto hide-scrollbar gap-2 sm:gap-3 px-2 sm:px-4 py-8 snap-x snap-mandatory"
+            className="flex mt-12 overflow-x-auto hide-scrollbar gap-2 sm:gap-3 px-2 sm:px-4 py-8 snap-x snap-mandatory"
           >
             {dates.map((date, index) => {
               const dateType = isSpecialDate(date);
@@ -155,7 +157,10 @@ const HorizontalCalendar = () => {
                     <span className="text-white text-lg sm:text-xl font-bold">
                       {date.getDate()}
                     </span>
-                    {getSpecialLabel(dateType)}
+                    {/* Reserve consistent space for emojis */}
+                    <div className="h-[24px] flex items-center justify-center">
+                      {getSpecialLabel(dateType)}
+                    </div>
                   </button>
                 </div>
               );
