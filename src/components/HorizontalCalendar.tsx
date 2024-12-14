@@ -58,15 +58,17 @@ const HorizontalCalendar = () => {
   };
 
   const getSpecialLabel = (dateType: DateType) => {
-    const baseClasses = "text-xs mt-1 font-medium tracking-wide";
+    const baseClasses = "text-xs mt-1 font-medium tracking-wide flex gap-1";
 
     switch (dateType) {
       case "birthday":
-        return <span className={`${baseClasses} text-pink-200`}>🎂</span>;
+        return <span className={baseClasses}>🎂 🎉 🎈</span>;
       case "bonus":
-        return <span className={`${baseClasses} text-purple-200`}>✨</span>;
+        return <span className={baseClasses}>✨ 💰 🎁</span>;
       case "christmas":
-        return <span className={`${baseClasses} text-emerald-200`}>🎄</span>;
+        return <span className={baseClasses}>🎄 🎅 ❄️</span>;
+      case "yalda":
+        return <span className={baseClasses}>🍎 🍉 🌙</span>;
       default:
         return null;
     }
@@ -119,6 +121,8 @@ const HorizontalCalendar = () => {
         return `${baseClasses} bg-purple-500/30 hover:bg-purple-500/40 border-purple-300/40 hover:border-purple-300/60`;
       case "christmas":
         return `${baseClasses} bg-emerald-500/30 hover:bg-emerald-500/40 border-emerald-300/40 hover:border-emerald-300/60`;
+      case "yalda":
+        return `${baseClasses} bg-red-500/30 hover:bg-red-500/40 border-red-300/40 hover:border-red-300/60`;
       default:
         return `${baseClasses} bg-white/10 hover:bg-white/20 border-white/20 hover:border-white/40`;
     }
