@@ -25,22 +25,27 @@ const HorizontalCalendar = () => {
     const targetDate = new Date(date);
     targetDate.setHours(0, 0, 0, 0);
 
-    console.log({
-      clicked: targetDate.toISOString(),
-      today: today.toISOString(),
+    console.log("handleDateClick", {
+      targetDate,
+      today,
+      devMode,
+      isFuture: targetDate > today,
     });
 
     const targetDateTime = targetDate.getTime();
     const todayTime = today.getTime();
 
     if (targetDateTime > todayTime && !devMode) {
+      console.log("Showing toast");
       return toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(targetDate)}`,
       });
     }
 
-    router.push(`/message/${targetDate.toISOString().split("T")[0]}`);
+    const dateString = targetDate.toISOString().split("T")[0];
+    console.log("Navigating to", `/message/${dateString}`);
+    router.push(`/message/${dateString}`);
   };
 
   const getCardClasses = (index: number, dateType: DateType) => {
