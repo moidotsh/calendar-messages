@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 interface AnimatedLayoutProps {
   children: React.ReactNode;
-  progress?: number; // Optional progress for home page
+  progress?: number;
 }
 
 export const AnimatedLayout = ({
@@ -14,7 +14,6 @@ export const AnimatedLayout = ({
 }: AnimatedLayoutProps) => {
   const router = useRouter();
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const isHomePage = router.pathname === "/";
 
   useEffect(() => {
     const handleRouteStart = () => setIsTransitioning(true);
@@ -31,7 +30,6 @@ export const AnimatedLayout = ({
 
   return (
     <div className="relative min-h-screen">
-      {/* Background with transition */}
       <div
         className={`fixed inset-0 transition-transform duration-700 ease-in-out ${
           isTransitioning ? "translate-y-full" : "translate-y-0"
@@ -40,7 +38,6 @@ export const AnimatedLayout = ({
         <AnimatedBackground progress={progress} />
       </div>
 
-      {/* Content */}
       <div
         className={`relative z-10 transition-opacity duration-700 ${
           isTransitioning ? "opacity-0" : "opacity-100"
