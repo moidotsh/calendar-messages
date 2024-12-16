@@ -1,44 +1,52 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { useHorizontalScroll } from "@/hooks/useHorizontalScroll";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useVisibleCards } from "@/hooks/useVisibleCards";
 import { AnimatedBackground } from "./AnimatedBackground";
 import { useToast } from "@/hooks/useToast";
 import EnhancedHeader from "./EnhancedHeader";
+import { useDevMode } from "@/hooks/useDevMode";
+import { useRouter } from "next/navigation";
 
 type DateType = "birthday" | "bonus" | "christmas" | "yalda" | "normal";
 
 const HorizontalCalendar = () => {
+  const devMode = useDevMode();
   const router = useRouter();
   const { toast } = useToast();
   const scrollRef = useHorizontalScroll();
   const scrollProgress = useScrollProgress(scrollRef);
   const { firstVisible, lastVisible } = useVisibleCards(scrollRef);
 
-  const handleDateClick = (date: Date) => {
+  const handleDateClick = async (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const targetDate = new Date(date);
     targetDate.setHours(0, 0, 0, 0);
 
-    console.log({
-      clicked: targetDate.toISOString(),
-      today: today.toISOString(),
+    console.log("Date clicked:", {
+      date: targetDate,
+      devMode,
+      isFuture: targetDate > today,
     });
 
-    const targetDateTime = targetDate.getTime();
-    const todayTime = today.getTime();
-
-    if (targetDateTime > todayTime) {
+    if (targetDate > today && !devMode) {
+      console.log("Showing toast - future date");
       return toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(targetDate)}`,
       });
     }
 
-    router.push(`/message/${targetDate.toISOString().split("T")[0]}`);
+    const dateString = targetDate.toISOString().split("T")[0];
+    console.log("Navigating to:", `/message/${dateString}`);
+
+    try {
+      await router.push(`/message/${dateString}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
   };
 
   const getCardClasses = (index: number, dateType: DateType) => {
@@ -132,6 +140,11 @@ const HorizontalCalendar = () => {
 
   return (
     <div className="relative min-h-screen">
+      {devMode && (
+        <div className="fixed top-0 right-0 m-4 px-3 py-1 bg-yellow-500/20 text-yellow-200 text-sm rounded-full border border-yellow-500/30 z-50">
+          Dev Mode
+        </div>
+      )}
       <AnimatedBackground progress={scrollProgress} />
       <EnhancedHeader />
       <div className="fixed inset-0 flex items-center justify-center px-2 sm:px-4 z-10">

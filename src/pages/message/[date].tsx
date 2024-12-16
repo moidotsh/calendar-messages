@@ -1,30 +1,9 @@
 // pages/message/[date].tsx
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const MessagePage = () => {
   const router = useRouter();
   const { date } = router.query;
-
-  useEffect(() => {
-    if (!date) return;
-
-    // Parse the date and compare with today
-    const messageDate = new Date(date as string);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // If trying to access a future date, redirect back to calendar
-    if (messageDate > today) {
-      router.push("/");
-      return;
-    }
-
-    // Here you can fetch the message for this date
-    // For now we'll just show the date
-  }, [date, router]);
-
-  if (!date) return null;
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">

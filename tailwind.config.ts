@@ -33,10 +33,25 @@ export default {
           "0%": { transform: "translateY(100%)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
+        "slide-down": {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(100%)" },
+        },
+        "fade-out": {
+          "0%": { opacity: "1" },
+          "100%": { opacity: "0" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         float: "float var(--duration, 20s) ease-in-out infinite",
         "slide-in-up": "slideInUp 0.3s ease-out forwards",
+        "slide-down": "slide-down 500ms ease-in-out forwards",
+        "fade-out": "fade-out 500ms ease-in-out forwards",
+        "fade-in": "fade-in 500ms ease-in-out forwards",
       },
       borderRadius: {
         lg: "var(--radius)",
