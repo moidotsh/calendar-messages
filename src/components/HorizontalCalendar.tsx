@@ -18,21 +18,35 @@ const HorizontalCalendar = () => {
   const scrollProgress = useScrollProgress(scrollRef);
   const { firstVisible, lastVisible } = useVisibleCards(scrollRef);
 
-  const handleDateClick = (date: Date) => {
+  const handleDateClick = async (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const targetDate = new Date(date);
     targetDate.setHours(0, 0, 0, 0);
 
+    console.log("Date clicked:", {
+      date: targetDate,
+      devMode,
+      isFuture: targetDate > today,
+    });
+
     if (targetDate > today && !devMode) {
+      console.log("Showing toast - future date");
       return toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(targetDate)}`,
       });
     }
 
-    router.push(`/message/${targetDate.toISOString().split("T")[0]}`);
+    const dateString = targetDate.toISOString().split("T")[0];
+    console.log("Navigating to:", `/message/${dateString}`);
+
+    try {
+      await router.push(`/message/${dateString}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
   };
 
   const getCardClasses = (index: number, dateType: DateType) => {

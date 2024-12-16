@@ -13,8 +13,18 @@ export const Layout = ({ children }: LayoutProps) => {
   const isHomePage = router.pathname === "/";
 
   useEffect(() => {
-    const handleStart = () => setIsTransitioning(true);
-    const handleComplete = () => setIsTransitioning(false);
+    const handleStart = (url: string) => {
+      console.log("Route change starting:", { from: router.pathname, to: url });
+      setIsTransitioning(true);
+    };
+
+    const handleComplete = (url: string) => {
+      console.log("Route change complete:", { to: url });
+      // Give the browser a chance to paint before removing transition
+      requestAnimationFrame(() => {
+        setIsTransitioning(false);
+      });
+    };
 
     router.events.on("routeChangeStart", handleStart);
     router.events.on("routeChangeComplete", handleComplete);
@@ -26,21 +36,20 @@ export const Layout = ({ children }: LayoutProps) => {
   }, [router]);
 
   return (
-    <div className="relative min-h-screen">
-      {/* Only show background on home page */}
+    <div className="relative min-h-screen bg-black">
       {isHomePage && (
         <div
-          className={`fixed inset-0 transition-transform duration-500 ease-in-out ${
+          className={`fixed inset-0 transform-gpu transition-transform duration-700 ease-in-out will-change-transform ${
             isTransitioning ? "translate-y-full" : "translate-y-0"
           }`}
+          style={{ backfaceVisibility: "hidden" }}
         >
           <AnimatedBackground progress={0} />
         </div>
       )}
 
-      {/* Page content with fade transition */}
       <div
-        className={`relative z-10 transition-opacity duration-500 ${
+        className={`relative z-10 transform-gpu transition-opacity duration-700 ease-in-out ${
           isTransitioning ? "opacity-0" : "opacity-100"
         }`}
       >
