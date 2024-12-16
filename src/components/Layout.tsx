@@ -1,7 +1,7 @@
 // src/components/Layout.tsx
 import { useRouter } from "next/router";
 import { AnimatedBackground } from "./AnimatedBackground";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,21 +9,27 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   const router = useRouter();
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const isHomePage = router.pathname === "/";
+  const [isLeaving, setIsLeaving] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
-    const handleStart = (url: string) => {
-      console.log("Route change starting:", { from: router.pathname, to: url });
-      setIsTransitioning(true);
+    const handleStart = () => {
+      setIsLeaving(true);
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
 
-    const handleComplete = (url: string) => {
-      console.log("Route change complete:", { to: url });
-      // Give the browser a chance to paint before removing transition
-      requestAnimationFrame(() => {
-        setIsTransitioning(false);
-      });
+    const handleComplete = () => {
+      setIsLeaving(false);
+      setIsEntering(true);
+      // Remove entering class after animation completes
+      timeoutRef.current = setTimeout(() => {
+        setIsEntering(false);
+      }, 500);
     };
 
     router.events.on("routeChangeStart", handleStart);
@@ -32,26 +38,34 @@ export const Layout = ({ children }: LayoutProps) => {
     return () => {
       router.events.off("routeChangeStart", handleStart);
       router.events.off("routeChangeComplete", handleComplete);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, [router]);
 
   return (
     <div className="relative min-h-screen bg-black">
+      {/* Background with animations */}
       {isHomePage && (
         <div
-          className={`fixed inset-0 transform-gpu transition-transform duration-700 ease-in-out will-change-transform ${
-            isTransitioning ? "translate-y-full" : "translate-y-0"
-          }`}
-          style={{ backfaceVisibility: "hidden" }}
+          className={`
+            fixed inset-0
+            transition-transform duration-500 ease-in-out
+            ${isLeaving ? "animate-slide-down" : ""}
+          `}
         >
           <AnimatedBackground progress={0} />
         </div>
       )}
 
+      {/* Content with animations */}
       <div
-        className={`relative z-10 transform-gpu transition-opacity duration-700 ease-in-out ${
-          isTransitioning ? "opacity-0" : "opacity-100"
-        }`}
+        className={`
+          relative z-10
+          ${isLeaving ? "animate-fade-out" : ""}
+          ${isEntering ? "animate-fade-in" : ""}
+        `}
       >
         {children}
       </div>
