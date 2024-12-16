@@ -1,10 +1,13 @@
 // pages/message/[date].tsx
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDevMode } from "@/hooks/useDevMode"; // Add this import
 
 const MessagePage = () => {
   const router = useRouter();
   const { date } = router.query;
+  const devMode = useDevMode(); // Add this
+  const [isValidDate, setIsValidDate] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!date) return;
@@ -14,17 +17,20 @@ const MessagePage = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // If trying to access a future date, redirect back to calendar
-    if (messageDate > today) {
+    // Only redirect if not in dev mode and trying to access a future date
+    if (messageDate > today && !devMode) {
       router.push("/");
       return;
     }
 
-    // Here you can fetch the message for this date
-    // For now we'll just show the date
-  }, [date, router]);
+    setIsValidDate(true);
+  }, [date, router, devMode]);
 
-  if (!date) return null;
+  // Show nothing while checking date validity
+  if (isValidDate === null) return null;
+
+  // Only render content if date is valid
+  if (!isValidDate) return null;
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
