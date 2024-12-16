@@ -2,6 +2,7 @@
 import type { AppProps } from "next/app";
 import { useToast } from "@/hooks/useToast";
 import { Toast } from "@/components/ui/Toast";
+import { Layout } from "@/components/Layout";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -9,7 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const { activeToast, hideToast } = useToast();
 
   return (
-    <>
+    <Layout>
       <Analytics />
       <Component {...pageProps} />
       {activeToast && (
@@ -19,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           onClose={hideToast}
         />
       )}
-    </>
+    </Layout>
   );
 }
 
