@@ -6,10 +6,12 @@ import { useVisibleCards } from "@/hooks/useVisibleCards";
 import { AnimatedBackground } from "./AnimatedBackground";
 import { useToast } from "@/hooks/useToast";
 import EnhancedHeader from "./EnhancedHeader";
+import { useDevMode } from "@/hooks/useDevMode";
 
 type DateType = "birthday" | "bonus" | "christmas" | "yalda" | "normal";
 
 const HorizontalCalendar = () => {
+  const devMode = useDevMode();
   const router = useRouter();
   const { toast } = useToast();
   const scrollRef = useHorizontalScroll();
@@ -31,7 +33,7 @@ const HorizontalCalendar = () => {
     const targetDateTime = targetDate.getTime();
     const todayTime = today.getTime();
 
-    if (targetDateTime > todayTime) {
+    if (targetDateTime > todayTime && !devMode) {
       return toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(targetDate)}`,
@@ -132,6 +134,11 @@ const HorizontalCalendar = () => {
 
   return (
     <div className="relative min-h-screen">
+      {devMode && (
+        <div className="fixed top-0 right-0 m-4 px-3 py-1 bg-yellow-500/20 text-yellow-200 text-sm rounded-full border border-yellow-500/30 z-50">
+          Dev Mode
+        </div>
+      )}
       <AnimatedBackground progress={scrollProgress} />
       <EnhancedHeader />
       <div className="fixed inset-0 flex items-center justify-center px-2 sm:px-4 z-10">
