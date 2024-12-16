@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { useHorizontalScroll } from "@/hooks/useHorizontalScroll";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useVisibleCards } from "@/hooks/useVisibleCards";
@@ -10,9 +9,12 @@ import { useDevMode } from "@/hooks/useDevMode";
 
 type DateType = "birthday" | "bonus" | "christmas" | "yalda" | "normal";
 
-const HorizontalCalendar = () => {
+interface HorizontalCalendarProps {
+  onNavigate: (path: string) => void;
+}
+
+const HorizontalCalendar = ({ onNavigate }: HorizontalCalendarProps) => {
   const devMode = useDevMode();
-  const router = useRouter();
   const { toast } = useToast();
   const scrollRef = useHorizontalScroll();
   const scrollProgress = useScrollProgress(scrollRef);
@@ -25,18 +27,10 @@ const HorizontalCalendar = () => {
     const targetDate = new Date(date);
     targetDate.setHours(0, 0, 0, 0);
 
-    console.log("handleDateClick", {
-      targetDate,
-      today,
-      devMode,
-      isFuture: targetDate > today,
-    });
-
     const targetDateTime = targetDate.getTime();
     const todayTime = today.getTime();
 
     if (targetDateTime > todayTime && !devMode) {
-      console.log("Showing toast");
       return toast({
         title: "Hey! No peeking!! 👀",
         message: `This message will be available on ${formatDate(targetDate)}`,
@@ -44,8 +38,7 @@ const HorizontalCalendar = () => {
     }
 
     const dateString = targetDate.toISOString().split("T")[0];
-    console.log("Navigating to", `/message/${dateString}`);
-    router.push(`/message/${dateString}`);
+    onNavigate(`/message/${dateString}`);
   };
 
   const getCardClasses = (index: number, dateType: DateType) => {
