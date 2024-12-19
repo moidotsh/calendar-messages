@@ -1,9 +1,16 @@
 // pages/message/[date].tsx
 import { useRouter } from "next/router";
+import { useState } from "react";
+import TinaVerification from "@/components/TinaVerification";
 
 const MessagePage = () => {
   const router = useRouter();
   const { date } = router.query;
+  const [isVerified, setIsVerified] = useState(false);
+
+  if (!isVerified) {
+    return <TinaVerification onSuccess={() => setIsVerified(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
