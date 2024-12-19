@@ -44,8 +44,18 @@ const HorizontalCalendar = () => {
 
     // Set the access time to 8 PM (20:00) Stockholm time for the target date
     const targetDate = new Date(date);
-    const accessTime = new Date(targetDate);
+    const accessTime = new Date(
+      date.toLocaleString("en-US", {
+        timeZone: "Europe/Stockholm",
+      }),
+    );
+    // Set to 8 PM Stockholm time
     accessTime.setHours(20, 0, 0, 0);
+    // Convert back to local time for comparison
+    const accessTimeStr = accessTime.toLocaleString("en-US", {
+      timeZone: "Europe/Stockholm",
+    });
+    const accessTimeLocal = new Date(accessTimeStr);
 
     console.log("Date clicked:", {
       date: targetDate,
@@ -65,10 +75,19 @@ const HorizontalCalendar = () => {
       });
 
       // Calculate time difference
-      const timeDiff = accessTime.getTime() - currentStockholmTime.getTime();
+      // Get access time in Stockholm timezone for proper comparison
+      const stockholmAccessTime = new Date(
+        targetDate.toLocaleString("en-US", {
+          timeZone: "Europe/Stockholm",
+        }),
+      );
+      stockholmAccessTime.setHours(20, 0, 0, 0);
+
+      const timeDiff =
+        stockholmAccessTime.getTime() - currentStockholmTime.getTime();
       const isWithin24Hours = timeDiff <= 24 * 60 * 60 * 1000;
 
-      let message = `This message will be available on ${formatDate(targetDate)} at ${formattedTime} Stockholm time`;
+      let message = `This message will be available on ${formatDate(targetDate)} at 8:00 PM Stockholm time`;
 
       if (isWithin24Hours) {
         const timeRemaining = formatTimeRemaining(timeDiff);
