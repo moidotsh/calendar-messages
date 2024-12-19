@@ -53,7 +53,8 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
         setIsVerifying(false);
         toast({
           title: "Oops! Try again! 🌸",
-          message: "That wasn't quite right. A true friend would know this!",
+          content:
+            "That wasn't quite right. The real goldokhtar would know this!",
         });
         router.push("/");
       }, 1000);

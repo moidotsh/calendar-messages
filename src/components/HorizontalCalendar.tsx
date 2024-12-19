@@ -18,24 +18,70 @@ const HorizontalCalendar = () => {
   const scrollProgress = useScrollProgress(scrollRef);
   const { firstVisible, lastVisible } = useVisibleCards(scrollRef);
 
-  const handleDateClick = async (date: Date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const formatTimeRemaining = (milliseconds: number): string => {
+    const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+    const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
 
+    if (hours > 0) {
+      return `${hours} hour${hours !== 1 ? "s" : ""} and ${minutes} minute${minutes !== 1 ? "s" : ""}`;
+    }
+    return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+  };
+
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+    }).format(date);
+  };
+
+  const handleDateClick = async (date: Date) => {
+    // Get current time in Stockholm
+    const stockholmTime = new Date().toLocaleString("en-US", {
+      timeZone: "Europe/Stockholm",
+    });
+    const currentStockholmTime = new Date(stockholmTime);
+
+    // Set the access time to 8 PM (20:00) Stockholm time for the target date
     const targetDate = new Date(date);
-    targetDate.setHours(0, 0, 0, 0);
+    const accessTime = new Date(
+      date.toLocaleString("en-US", {
+        timeZone: "Europe/Stockholm",
+      }),
+    );
+    // Set to 8 PM Stockholm time
+    accessTime.setHours(20, 0, 0, 0);
 
     console.log("Date clicked:", {
       date: targetDate,
       devMode,
-      isFuture: targetDate > today,
+      currentTime: currentStockholmTime,
+      accessTime: accessTime,
+      isFuture: currentStockholmTime < accessTime,
     });
 
-    if (targetDate > today && !devMode) {
+    if (currentStockholmTime < accessTime && !devMode) {
       console.log("Showing toast - future date");
+
+      // Calculate time difference
+      // Get access time in Stockholm timezone for proper comparison
+      const stockholmAccessTime = new Date(
+        targetDate.toLocaleString("en-US", {
+          timeZone: "Europe/Stockholm",
+        }),
+      );
+      stockholmAccessTime.setHours(20, 0, 0, 0);
+
+      const timeDiff =
+        stockholmAccessTime.getTime() - currentStockholmTime.getTime();
+      const isWithin24Hours = timeDiff <= 24 * 60 * 60 * 1000;
+
       return toast({
         title: "Hey! No peeking!! 👀",
-        message: `This message will be available on ${formatDate(targetDate)}`,
+        content: `This message will be available on ${formatDate(targetDate)} at 8:00 PM Stockholm time`,
+        countdown: isWithin24Hours
+          ? `⏳ Opening in ${formatTimeRemaining(timeDiff)}!`
+          : null,
       });
     }
 
@@ -98,13 +144,6 @@ const HorizontalCalendar = () => {
     return datesArray;
   }, []);
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-    }).format(date);
-  };
-
   const isSpecialDate = (date: Date): DateType => {
     const month = date.getMonth();
     const day = date.getDate();
@@ -118,11 +157,11 @@ const HorizontalCalendar = () => {
 
   const getDateClasses = (dateType: DateType) => {
     const baseClasses = `
-        w-full aspect-square rounded-lg backdrop-blur-sm
-        transition-all duration-300
-        flex flex-col items-center justify-center gap-2
-        border
-      `;
+      w-full aspect-square rounded-lg backdrop-blur-sm
+      transition-all duration-300
+      flex flex-col items-center justify-center gap-2
+      border
+    `;
 
     switch (dateType) {
       case "birthday":

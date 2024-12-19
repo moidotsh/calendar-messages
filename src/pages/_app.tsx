@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       {activeToast && (
         <Toast
           title={activeToast.title}
-          message={activeToast.message}
+          message={activeToast}
           onClose={hideToast}
         />
       )}
