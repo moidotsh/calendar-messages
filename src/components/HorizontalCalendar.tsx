@@ -78,7 +78,7 @@ const HorizontalCalendar = () => {
 
       return toast({
         title: "Hey! No peeking!! 👀",
-        content: `Available ${formatDate(targetDate)} 8PM Stockholm time`,
+        content: `Available ${formatDate(targetDate)}, 8PM Stockholm time`,
         countdown: isWithin24Hours
           ? `⏳ Opening in ${formatTimeRemaining(timeDiff)}!`
           : null,
