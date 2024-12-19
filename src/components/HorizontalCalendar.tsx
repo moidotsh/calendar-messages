@@ -51,11 +51,6 @@ const HorizontalCalendar = () => {
     );
     // Set to 8 PM Stockholm time
     accessTime.setHours(20, 0, 0, 0);
-    // Convert back to local time for comparison
-    const accessTimeStr = accessTime.toLocaleString("en-US", {
-      timeZone: "Europe/Stockholm",
-    });
-    const accessTimeLocal = new Date(accessTimeStr);
 
     console.log("Date clicked:", {
       date: targetDate,
@@ -67,12 +62,6 @@ const HorizontalCalendar = () => {
 
     if (currentStockholmTime < accessTime && !devMode) {
       console.log("Showing toast - future date");
-      const formattedTime = accessTime.toLocaleString("en-US", {
-        timeZone: "Europe/Stockholm",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      });
 
       // Calculate time difference
       // Get access time in Stockholm timezone for proper comparison
