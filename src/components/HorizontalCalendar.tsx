@@ -76,16 +76,12 @@ const HorizontalCalendar = () => {
         stockholmAccessTime.getTime() - currentStockholmTime.getTime();
       const isWithin24Hours = timeDiff <= 24 * 60 * 60 * 1000;
 
-      let message = `This message will be available on ${formatDate(targetDate)} at 8:00 PM Stockholm time`;
-
-      if (isWithin24Hours) {
-        const timeRemaining = formatTimeRemaining(timeDiff);
-        message += `\n\n⏳ Opening in ${timeRemaining}!`;
-      }
-
       return toast({
         title: "Hey! No peeking!! 👀",
-        message,
+        content: `This message will be available on ${formatDate(targetDate)} at 8:00 PM Stockholm time`,
+        countdown: isWithin24Hours
+          ? `⏳ Opening in ${formatTimeRemaining(timeDiff)}!`
+          : null,
       });
     }
 

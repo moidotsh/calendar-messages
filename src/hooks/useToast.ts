@@ -1,8 +1,10 @@
+// src/hooks/useToast.ts
 import { create } from "zustand";
 
 interface ToastMessage {
   title: string;
-  message: string;
+  content: string;
+  countdown?: string | null;
   variant?: "default" | "destructive";
 }
 
@@ -24,6 +26,6 @@ export const useToast = () => {
   return {
     toast: showToast,
     hideToast,
-    activeToast, // Now this matches what we're using in _app.tsx
+    activeToast,
   };
 };
