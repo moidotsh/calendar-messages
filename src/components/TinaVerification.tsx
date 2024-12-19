@@ -1,65 +1,118 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/useToast";
 
+interface Answer {
+  id: string;
+  text: string;
+}
+
 interface Question {
-  question: string;
-  options: string[];
-  correctIndex: number;
+  question_id: string;
+  question_text: string;
+  answers: Answer[];
 }
 
 interface TinaVerificationProps {
   onSuccess: () => void;
 }
 
-const getRandomQuestion = (): Question => {
-  const questions: Question[] = [
-    {
-      question: "What's Tina's favorite fruit?",
-      options: ["Pomegranate", "Apple", "Orange", "Banana"],
-      correctIndex: 0,
-    },
-    {
-      question: "Which flower represents Tina?",
-      options: ["Rose", "Lily", "Jasmine", "Sunflower"],
-      correctIndex: 2,
-    },
-    {
-      question: "What's Dokhtare Gol's favorite season?",
-      options: ["Winter", "Spring", "Summer", "Fall"],
-      correctIndex: 1,
-    },
-  ];
-  return questions[Math.floor(Math.random() * questions.length)];
-};
-
 export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
-  const [question] = useState<Question>(getRandomQuestion());
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<string[]>(
+    Array(5).fill(null),
+  );
   const [isVerifying, setIsVerifying] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleVerify = () => {
-    setIsVerifying(true);
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch("/api/verification/questions");
+        if (!response.ok) throw new Error("Failed to fetch questions");
 
-    if (selectedOption === question.correctIndex) {
-      setTimeout(() => {
-        setIsVerifying(false);
-        onSuccess();
-      }, 1000);
-    } else {
-      setTimeout(() => {
-        setIsVerifying(false);
+        const data = await response.json();
+        setQuestions(data.questions);
+        setSessionId(data.sessionId);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
         toast({
-          title: "Oops! Try again! 🌸",
-          content:
-            "That wasn't quite right. The real goldokhtar would know this!",
+          title: "Error",
+          content: "Failed to load verification questions. Please try again.",
         });
         router.push("/");
-      }, 1000);
+      }
+    };
+
+    fetchQuestions();
+  }, [router, toast]);
+
+  const handleAnswerSelect = (answerId: string) => {
+    const newAnswers = [...selectedAnswers];
+    newAnswers[currentQuestionIndex] = answerId;
+    setSelectedAnswers(newAnswers);
+  };
+
+  const handleVerify = async () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      return;
+    }
+
+    setIsVerifying(true);
+    try {
+      const response = await fetch("/api/verification/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sessionId,
+          answers: questions.map((q, index) => ({
+            questionId: q.question_id,
+            answerId: selectedAnswers[index],
+          })),
+        }),
+      });
+
+      if (!response.ok) throw new Error("Verification failed");
+
+      const { success } = await response.json();
+
+      if (success) {
+        onSuccess();
+      } else {
+        toast({
+          title: "Verification Failed 🌸",
+          content:
+            "Some answers were incorrect. The real Tina would know these!",
+        });
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Error during verification:", error);
+      toast({
+        title: "Error",
+        content: "An error occurred during verification. Please try again.",
+      });
+      router.push("/");
+    } finally {
+      setIsVerifying(false);
     }
   };
+
+  if (questions.length === 0) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  const currentQuestion = questions[currentQuestionIndex];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -86,35 +139,35 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
             Verify that you are Tina
           </h2>
           <p className="text-sm text-gray-500">
-            Complete to continue to your special page
+            Question {currentQuestionIndex + 1} of {questions.length}
           </p>
 
           {/* Question */}
           <div className="w-full pt-4">
             <p className="text-center mb-4 text-gray-700">
-              {question.question}
+              {currentQuestion.question_text}
             </p>
             <div className="space-y-2">
-              {question.options.map((option, index) => (
+              {currentQuestion.answers.map((answer) => (
                 <button
-                  key={index}
-                  onClick={() => setSelectedOption(index)}
+                  key={answer.id}
+                  onClick={() => handleAnswerSelect(answer.id)}
                   className={`w-full p-3 rounded-lg border transition-all ${
-                    selectedOption === index
+                    selectedAnswers[currentQuestionIndex] === answer.id
                       ? "border-purple-500 bg-purple-50"
                       : "border-gray-200 hover:border-purple-200 hover:bg-purple-50/50"
                   }`}
                 >
-                  {option}
+                  {answer.text}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Verify Button */}
+          {/* Next/Verify Button */}
           <button
             onClick={handleVerify}
-            disabled={selectedOption === null || isVerifying}
+            disabled={!selectedAnswers[currentQuestionIndex] || isVerifying}
             className={`w-full py-3 px-4 rounded-lg text-white font-medium transition-all
               ${isVerifying ? "bg-purple-400" : "bg-purple-600 hover:bg-purple-700"}
               disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -142,8 +195,10 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
                 </svg>
                 Verifying...
               </span>
-            ) : (
+            ) : currentQuestionIndex === questions.length - 1 ? (
               "Verify"
+            ) : (
+              "Next Question"
             )}
           </button>
         </div>
