@@ -43,7 +43,7 @@ const YaldaDay = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a0f1c] to-black text-white flex items-center justify-center p-4 relative overflow-hidden">
       {/* Back button - fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 flex justify-center z-20 bg-gradient-to-t from-black to-transparent pb-8">
+      <div className="fixed bottom-0 left-0 right-0 p-4 flex justify-center z-20 bg-gradient-to-t from-black to-transparent">
         <button
           onClick={() => router.push("/")}
           className="flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all"
@@ -83,10 +83,10 @@ const YaldaDay = () => {
 
         {/* Message Section with animated background */}
         <Card className="transform transition-all duration-500 hover:scale-[1.02] bg-white/10 backdrop-blur-lg p-8 relative overflow-hidden group border-white/20">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transform translate-x-[-50%] group-hover:translate-x-[50%] transition-all duration-1000 ease-in-out" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transform translate-x-[-50%] group-hover:translate-x-[50%] transition-all duration-1000 ease-in-out " />
 
           {message && (
-            <div className="space-y-6 text-center relative z-10">
+            <div className="space-y-6 text-center relative z-10 mb-3">
               <div className="space-y-6">
                 <h2 className="text-2xl font-semibold text-white mb-6">
                   {message.title}
