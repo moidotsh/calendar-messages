@@ -3,11 +3,13 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import TinaVerification from "@/components/TinaVerification";
 import dynamic from "next/dynamic";
+import { useDevMode } from "@/hooks/useDevMode";
 
 const MessagePage = () => {
   const router = useRouter();
   const { date } = router.query;
   const [isVerified, setIsVerified] = useState(false);
+  const devMode = useDevMode();
 
   // Early return if no date
   if (!date || typeof date !== "string") {
@@ -35,7 +37,8 @@ const MessagePage = () => {
     },
   );
 
-  if (!isVerified) {
+  // Skip verification if in dev mode or if NEXT_PUBLIC_SKIP_VERIFICATION is true
+  if (!devMode && !process.env.NEXT_PUBLIC_SKIP_VERIFICATION && !isVerified) {
     return <TinaVerification onSuccess={() => setIsVerified(true)} />;
   }
 
