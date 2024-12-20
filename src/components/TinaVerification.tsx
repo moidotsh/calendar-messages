@@ -39,9 +39,11 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
         setSessionId(data.sessionId);
       } catch (error) {
         console.error("Error fetching questions:", error);
+        const errorDetails =
+          error instanceof Error ? error.message : "Unknown error";
         toast({
           title: "Error",
-          content: "Failed to load verification questions. Please try again.",
+          content: `Failed to load verification questions: ${errorDetails}`,
         });
         router.push("/");
       }
