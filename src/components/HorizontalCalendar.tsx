@@ -36,6 +36,13 @@ const HorizontalCalendar = () => {
   };
 
   const handleDateClick = async (date: Date) => {
+    // Format date in Stockholm timezone to ensure correct date
+    const stockholmDate = new Date(
+      date.toLocaleString("en-US", {
+        timeZone: "Europe/Stockholm",
+      }),
+    );
+
     // Get current time in Stockholm
     const stockholmTime = new Date().toLocaleString("en-US", {
       timeZone: "Europe/Stockholm",
@@ -43,17 +50,11 @@ const HorizontalCalendar = () => {
     const currentStockholmTime = new Date(stockholmTime);
 
     // Set the access time to 8 PM (20:00) Stockholm time for the target date
-    const targetDate = new Date(date);
-    const accessTime = new Date(
-      date.toLocaleString("en-US", {
-        timeZone: "Europe/Stockholm",
-      }),
-    );
-    // Set to 8 PM Stockholm time
+    const accessTime = new Date(stockholmDate);
     accessTime.setHours(20, 0, 0, 0);
 
     console.log("Date clicked:", {
-      date: targetDate,
+      date: stockholmDate,
       devMode,
       currentTime: currentStockholmTime,
       accessTime: accessTime,
@@ -64,28 +65,20 @@ const HorizontalCalendar = () => {
       console.log("Showing toast - future date");
 
       // Calculate time difference
-      // Get access time in Stockholm timezone for proper comparison
-      const stockholmAccessTime = new Date(
-        targetDate.toLocaleString("en-US", {
-          timeZone: "Europe/Stockholm",
-        }),
-      );
-      stockholmAccessTime.setHours(20, 0, 0, 0);
-
-      const timeDiff =
-        stockholmAccessTime.getTime() - currentStockholmTime.getTime();
+      const timeDiff = accessTime.getTime() - currentStockholmTime.getTime();
       const isWithin24Hours = timeDiff <= 24 * 60 * 60 * 1000;
 
       return toast({
         title: "Hey! No peeking!! 👀",
-        content: `Available ${formatDate(targetDate)}, 8PM Stockholm time`,
+        content: `Available ${formatDate(stockholmDate)}, 8PM Stockholm time`,
         countdown: isWithin24Hours
           ? `⏳ Opening in ${formatTimeRemaining(timeDiff)}!`
           : null,
       });
     }
 
-    const dateString = targetDate.toISOString().split("T")[0];
+    // Format the date string using the Stockholm date to ensure correct day
+    const dateString = stockholmDate.toLocaleDateString("en-CA"); // This will give YYYY-MM-DD format
     console.log("Navigating to:", `/message/${dateString}`);
 
     try {
