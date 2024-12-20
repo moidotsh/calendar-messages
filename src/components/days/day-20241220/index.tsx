@@ -1,8 +1,9 @@
 // src/components/days/day-20241220/index.tsx
 import React, { useEffect, useState } from "react";
-import { Star } from "lucide-react";
+import { Star, ChevronLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 interface CustomCSSProperties extends React.CSSProperties {
   "--duration"?: string;
@@ -16,6 +17,7 @@ interface MessageContent {
 
 const YaldaDay = () => {
   const [message, setMessage] = useState<MessageContent | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMessage = async () => {
@@ -40,6 +42,16 @@ const YaldaDay = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a0f1c] to-black text-white flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Back button - fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 flex justify-center z-20 bg-gradient-to-t from-black to-transparent pb-8">
+        <button
+          onClick={() => router.push("/")}
+          className="flex items-center justify-center space-x-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all"
+        >
+          <ChevronLeft size={20} />
+          <span>Back to Calendar</span>
+        </button>
+      </div>
       {/* Animated background stars */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(20)].map((_, i) => (
