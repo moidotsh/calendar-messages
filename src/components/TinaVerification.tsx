@@ -1,3 +1,4 @@
+// src/components/TinaVerification.tsx
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/useToast";
@@ -68,9 +69,7 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
     try {
       const response = await fetch("/api/verification/verify", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sessionId,
           answers: questions.map((q, index) => ({
@@ -118,7 +117,7 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl mx-4">
         <div className="flex flex-col items-center space-y-4">
           {/* Header */}
           <div className="w-12 h-12 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 rounded-full flex items-center justify-center">
@@ -146,21 +145,25 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
 
           {/* Question */}
           <div className="w-full pt-4">
-            <p className="text-center mb-4 text-gray-700">
+            <p className="text-center mb-6 text-gray-700 text-lg">
               {currentQuestion.question_text}
             </p>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {currentQuestion.answers.map((answer) => (
                 <button
                   key={answer.id}
                   onClick={() => handleAnswerSelect(answer.id)}
-                  className={`w-full p-3 rounded-lg border transition-all ${
-                    selectedAnswers[currentQuestionIndex] === answer.id
-                      ? "border-purple-500 bg-purple-50"
-                      : "border-gray-200 hover:border-purple-200 hover:bg-purple-50/50"
-                  }`}
+                  className={`w-full p-4 rounded-lg text-center transition-all
+                    ${
+                      selectedAnswers[currentQuestionIndex] === answer.id
+                        ? "bg-purple-100 border-purple-500 text-purple-900 border-2"
+                        : "bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-purple-200 text-gray-700"
+                    }
+                  `}
                 >
-                  {answer.text}
+                  <span className="block text-base font-medium">
+                    {answer.text}
+                  </span>
                 </button>
               ))}
             </div>
@@ -170,8 +173,12 @@ export default function TinaVerification({ onSuccess }: TinaVerificationProps) {
           <button
             onClick={handleVerify}
             disabled={!selectedAnswers[currentQuestionIndex] || isVerifying}
-            className={`w-full py-3 px-4 rounded-lg text-white font-medium transition-all
-              ${isVerifying ? "bg-purple-400" : "bg-purple-600 hover:bg-purple-700"}
+            className={`w-full py-3 px-4 rounded-lg text-white font-medium mt-6 transition-all
+              ${
+                isVerifying
+                  ? "bg-purple-400"
+                  : "bg-purple-600 hover:bg-purple-700"
+              }
               disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {isVerifying ? (
