@@ -49,16 +49,18 @@ const TruthOrDare = () => {
         <Card className="bg-white/10 backdrop-blur-lg p-8 border-white/20">
           {gameState === "welcome" && (
             <div className="text-center space-y-6">
-              <h1 className="text-3xl font-bold mb-4">Let's Play a Game! 🎮</h1>
+              <h1 className="text-3xl font-bold mb-4">
+                Let&apos;s Play a Game! 🎮
+              </h1>
               <p className="text-lg mb-6">
-                Since you're the birthday girl, instead of flipping a coin, you
-                get to choose first...
+                Since you&apos;re the birthday girl, instead of flipping a coin,
+                you get to choose first...
               </p>
               <button
                 onClick={() => setGameState("choice")}
                 className="px-8 py-4 bg-purple-500/50 hover:bg-purple-500/70 rounded-lg transition-all"
               >
-                Let's Begin!
+                Let&apos;s Begin!
               </button>
             </div>
           )}
@@ -91,13 +93,13 @@ const TruthOrDare = () => {
                   onClick={() => setTruthType("confession")}
                   className="px-8 py-4 bg-blue-500/50 hover:bg-blue-500/70 rounded-lg transition-all"
                 >
-                  I want Alex to confess something
+                  I want Arman to confess something
                 </button>
                 <button
                   onClick={() => setTruthType("question")}
                   className="px-8 py-4 bg-blue-500/50 hover:bg-blue-500/70 rounded-lg transition-all"
                 >
-                  I want to ask Alex a specific question
+                  I want to ask Arman a specific question
                 </button>
               </div>
             </div>
@@ -129,8 +131,8 @@ const TruthOrDare = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
                   truthType === "confession"
-                    ? "What should Alex confess about?"
-                    : "What do you want to ask Alex?"
+                    ? "What should Arman confess about?"
+                    : "What do you want to ask Arman?"
                 }
                 className="w-full p-4 rounded-lg bg-black/30 backdrop-blur-sm border border-white/20 focus:border-white/40 focus:ring-0 transition-all resize-none h-32"
               />
