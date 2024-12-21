@@ -53,7 +53,8 @@ const TruthOrDare = () => {
                 Let&apos;s Play a Game! 🎮
               </h1>
               <p className="text-lg mb-6">
-                Since you&apos;re the birthday girl, you get to choose first...
+                Since you&apos;re the birthday girl, instead of flipping a coin,
+                you get to choose first...
               </p>
               <button
                 onClick={() => setGameState("choice")}
@@ -92,13 +93,19 @@ const TruthOrDare = () => {
                   onClick={() => setTruthType("confession")}
                   className="px-8 py-4 bg-blue-500/50 hover:bg-blue-500/70 rounded-lg transition-all"
                 >
-                  I want Arman to confess something
+                  I want Arman to confess something of his choosing
                 </button>
                 <button
                   onClick={() => setTruthType("question")}
                   className="px-8 py-4 bg-blue-500/50 hover:bg-blue-500/70 rounded-lg transition-all"
                 >
-                  I want to ask Arman a specific question
+                  I want to ask Arman something
+                </button>
+                <button
+                  onClick={() => setGameState("choice")}
+                  className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-lg transition-all mt-4"
+                >
+                  Go Back
                 </button>
               </div>
             </div>
@@ -113,36 +120,76 @@ const TruthOrDare = () => {
                 placeholder="Type your dare here..."
                 className="w-full p-4 rounded-lg bg-black/30 backdrop-blur-sm border border-white/20 focus:border-white/40 focus:ring-0 transition-all resize-none h-32"
               />
-              <button
-                onClick={handleSubmit}
-                disabled={!inputValue.trim()}
-                className="px-8 py-4 bg-pink-500/50 hover:bg-pink-500/70 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Submit Dare
-              </button>
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={handleSubmit}
+                  disabled={!inputValue.trim()}
+                  className="px-8 py-4 bg-pink-500/50 hover:bg-pink-500/70 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Submit Dare
+                </button>
+                <button
+                  onClick={() => setGameState("choice")}
+                  className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-lg transition-all"
+                >
+                  Go Back
+                </button>
+              </div>
             </div>
           )}
 
-          {truthType && (
+          {truthType === "question" && (
             <div className="text-center space-y-6 mt-6">
               <textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={
-                  truthType === "confession"
-                    ? "What should Arman confess about?"
-                    : "What do you want to ask Arman?"
-                }
+                placeholder="What do you want to ask Arman?"
                 className="w-full p-4 rounded-lg bg-black/30 backdrop-blur-sm border border-white/20 focus:border-white/40 focus:ring-0 transition-all resize-none h-32"
               />
-              <button
-                onClick={handleSubmit}
-                disabled={!inputValue.trim()}
-                className="px-8 py-4 bg-blue-500/50 hover:bg-blue-500/70 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Submit{" "}
-                {truthType === "confession" ? "Confession Topic" : "Question"}
-              </button>
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={handleSubmit}
+                  disabled={!inputValue.trim()}
+                  className="px-8 py-4 bg-blue-500/50 hover:bg-blue-500/70 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Submit Question
+                </button>
+                <button
+                  onClick={() => {
+                    setTruthType("");
+                    setInputValue("");
+                  }}
+                  className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-lg transition-all"
+                >
+                  Go Back
+                </button>
+              </div>
+            </div>
+          )}
+
+          {truthType === "confession" && (
+            <div className="text-center space-y-6 mt-6">
+              <div className="p-6 bg-black/30 backdrop-blur-sm rounded-lg border border-white/20">
+                <p className="text-lg text-white/90 leading-relaxed">
+                  I want to confess that I&apos;ve been planning this advent
+                  calendar for months. Every detail, every message, every
+                  interaction - it&apos;s all been carefully crafted with you in
+                  mind. Because you deserve something special, something unique,
+                  something that shows just how much thought and love I put into
+                  making you happy.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={() => {
+                    setTruthType("");
+                    setGameState("choice");
+                  }}
+                  className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-lg transition-all"
+                >
+                  Go Back
+                </button>
+              </div>
             </div>
           )}
         </Card>
