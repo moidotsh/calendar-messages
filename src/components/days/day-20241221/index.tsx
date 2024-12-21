@@ -102,7 +102,11 @@ const TruthOrDare = () => {
                   I want to ask Arman something
                 </button>
                 <button
-                  onClick={() => setGameState("choice")}
+                  onClick={() => {
+                    setGameState("choice");
+                    setTruthType("");
+                    setInputValue("");
+                  }}
                   className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-lg transition-all mt-4"
                 >
                   Go Back
