@@ -53,8 +53,7 @@ const TruthOrDare = () => {
                 Let&apos;s Play a Game! 🎮
               </h1>
               <p className="text-lg mb-6">
-                Since you&apos;re the birthday girl, instead of flipping a coin,
-                you get to choose first...
+                Since you&apos;re the birthday girl, you get to choose first...
               </p>
               <button
                 onClick={() => setGameState("choice")}
